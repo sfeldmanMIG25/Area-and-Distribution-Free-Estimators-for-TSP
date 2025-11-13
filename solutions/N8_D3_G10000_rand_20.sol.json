@@ -1,0 +1,44 @@
+{
+    "instance_name": "N8_D3_G10000_rand_20",
+    "n_customers": 8,
+    "dimension": 3,
+    "grid_size": 10000,
+    "optimal_cost": 26993,
+    "optimal_tour": [
+        8,
+        5,
+        1,
+        2,
+        6,
+        3,
+        4,
+        7
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N8_D3_G10000_rand_20.json",
+    "concorde_length": 26993,
+    "concorde_time_s": 0.4476489999797195,
+    "concorde_tour": [
+        1,
+        5,
+        8,
+        7,
+        4,
+        3,
+        6,
+        2
+    ],
+    "lkh_length": 26993,
+    "lkh_time_s": 0.08524550002766773,
+    "lkh_tour": [
+        8,
+        5,
+        1,
+        2,
+        6,
+        3,
+        4,
+        7
+    ],
+    "lkh_gap_pct": 0.0
+}

@@ -1,0 +1,35 @@
+{
+    "instance_name": "N5_D5_G100_ring_4",
+    "n_customers": 5,
+    "dimension": 5,
+    "grid_size": 100,
+    "optimal_cost": 359,
+    "optimal_tour": [
+        4,
+        5,
+        1,
+        2,
+        3
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N5_D5_G100_ring_4.json",
+    "concorde_length": 359,
+    "concorde_time_s": 0.4350618000025861,
+    "concorde_tour": [
+        1,
+        5,
+        4,
+        3,
+        2
+    ],
+    "lkh_length": 359,
+    "lkh_time_s": 0.08877799997571856,
+    "lkh_tour": [
+        4,
+        5,
+        1,
+        2,
+        3
+    ],
+    "lkh_gap_pct": 0.0
+}

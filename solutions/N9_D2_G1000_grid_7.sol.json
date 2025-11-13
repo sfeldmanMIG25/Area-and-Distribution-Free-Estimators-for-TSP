@@ -1,0 +1,47 @@
+{
+    "instance_name": "N9_D2_G1000_grid_7",
+    "n_customers": 9,
+    "dimension": 2,
+    "grid_size": 1000,
+    "optimal_cost": 3357,
+    "optimal_tour": [
+        6,
+        3,
+        2,
+        5,
+        4,
+        9,
+        8,
+        1,
+        7
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N9_D2_G1000_grid_7.json",
+    "concorde_length": 3357,
+    "concorde_time_s": 0.7057963999977801,
+    "concorde_tour": [
+        1,
+        8,
+        9,
+        4,
+        5,
+        2,
+        3,
+        6,
+        7
+    ],
+    "lkh_length": 3357,
+    "lkh_time_s": 0.11759479998727329,
+    "lkh_tour": [
+        6,
+        3,
+        2,
+        5,
+        4,
+        9,
+        8,
+        1,
+        7
+    ],
+    "lkh_gap_pct": 0.0
+}

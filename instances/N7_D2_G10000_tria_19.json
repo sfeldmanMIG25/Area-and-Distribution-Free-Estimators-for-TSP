@@ -1,0 +1,38 @@
+{
+    "instance_name": "N7_D2_G10000_tria_19",
+    "n_customers": 7,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "tria",
+    "generation_seed": 1917632,
+    "coordinates": [
+        [
+            7967,
+            1
+        ],
+        [
+            9615,
+            2162
+        ],
+        [
+            2,
+            5995
+        ],
+        [
+            7800,
+            4260
+        ],
+        [
+            4525,
+            8781
+        ],
+        [
+            3150,
+            6861
+        ],
+        [
+            5350,
+            5954
+        ]
+    ]
+}

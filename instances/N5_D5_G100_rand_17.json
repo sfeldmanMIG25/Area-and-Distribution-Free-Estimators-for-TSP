@@ -1,0 +1,45 @@
+{
+    "instance_name": "N5_D5_G100_rand_17",
+    "n_customers": 5,
+    "dimension": 5,
+    "grid_size": 100,
+    "distribution_type": "rand",
+    "generation_seed": 1706021,
+    "coordinates": [
+        [
+            79,
+            75,
+            62,
+            26,
+            70
+        ],
+        [
+            3,
+            64,
+            72,
+            20,
+            43
+        ],
+        [
+            57,
+            15,
+            62,
+            13,
+            71
+        ],
+        [
+            74,
+            34,
+            99,
+            90,
+            37
+        ],
+        [
+            62,
+            74,
+            44,
+            84,
+            74
+        ]
+    ]
+}

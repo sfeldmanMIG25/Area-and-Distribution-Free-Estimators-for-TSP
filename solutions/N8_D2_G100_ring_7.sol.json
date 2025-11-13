@@ -1,0 +1,44 @@
+{
+    "instance_name": "N8_D2_G100_ring_7",
+    "n_customers": 8,
+    "dimension": 2,
+    "grid_size": 100,
+    "optimal_cost": 222,
+    "optimal_tour": [
+        3,
+        8,
+        6,
+        1,
+        4,
+        5,
+        7,
+        2
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N8_D2_G100_ring_7.json",
+    "concorde_length": 222,
+    "concorde_time_s": 1.4102846999885514,
+    "concorde_tour": [
+        1,
+        6,
+        8,
+        3,
+        2,
+        7,
+        5,
+        4
+    ],
+    "lkh_length": 222,
+    "lkh_time_s": 0.09684049998759292,
+    "lkh_tour": [
+        3,
+        8,
+        6,
+        1,
+        4,
+        5,
+        7,
+        2
+    ],
+    "lkh_gap_pct": 0.0
+}

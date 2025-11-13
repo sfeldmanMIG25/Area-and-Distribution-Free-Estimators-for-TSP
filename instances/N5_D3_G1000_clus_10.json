@@ -1,0 +1,35 @@
+{
+    "instance_name": "N5_D3_G1000_clus_10",
+    "n_customers": 5,
+    "dimension": 3,
+    "grid_size": 1000,
+    "distribution_type": "clus",
+    "generation_seed": 1006739,
+    "coordinates": [
+        [
+            712,
+            742,
+            703
+        ],
+        [
+            852,
+            658,
+            706
+        ],
+        [
+            1000,
+            718,
+            734
+        ],
+        [
+            975,
+            560,
+            49
+        ],
+        [
+            684,
+            476,
+            111
+        ]
+    ]
+}

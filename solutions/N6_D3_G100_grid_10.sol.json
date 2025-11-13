@@ -1,0 +1,38 @@
+{
+    "instance_name": "N6_D3_G100_grid_10",
+    "n_customers": 6,
+    "dimension": 3,
+    "grid_size": 100,
+    "optimal_cost": 380,
+    "optimal_tour": [
+        3,
+        5,
+        6,
+        4,
+        1,
+        2
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N6_D3_G100_grid_10.json",
+    "concorde_length": 380,
+    "concorde_time_s": 0.5136572999763303,
+    "concorde_tour": [
+        1,
+        4,
+        6,
+        5,
+        3,
+        2
+    ],
+    "lkh_length": 380,
+    "lkh_time_s": 0.061180600023362786,
+    "lkh_tour": [
+        3,
+        5,
+        6,
+        4,
+        1,
+        2
+    ],
+    "lkh_gap_pct": 0.0
+}

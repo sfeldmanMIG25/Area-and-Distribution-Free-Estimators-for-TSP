@@ -1,0 +1,38 @@
+{
+    "instance_name": "N6_D5_G1000_corn_3",
+    "n_customers": 6,
+    "dimension": 5,
+    "grid_size": 1000,
+    "optimal_cost": 8282,
+    "optimal_tour": [
+        1,
+        2,
+        4,
+        3,
+        6,
+        5
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N6_D5_G1000_corn_3.json",
+    "concorde_length": 8282,
+    "concorde_time_s": 0.5372879999922588,
+    "concorde_tour": [
+        1,
+        2,
+        4,
+        3,
+        6,
+        5
+    ],
+    "lkh_length": 8282,
+    "lkh_time_s": 0.11144279997097328,
+    "lkh_tour": [
+        1,
+        2,
+        4,
+        3,
+        6,
+        5
+    ],
+    "lkh_gap_pct": 0.0
+}

@@ -1,0 +1,35 @@
+{
+    "instance_name": "N5_D5_G100_tria_18",
+    "n_customers": 5,
+    "dimension": 5,
+    "grid_size": 100,
+    "optimal_cost": 364,
+    "optimal_tour": [
+        3,
+        5,
+        2,
+        4,
+        1
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N5_D5_G100_tria_18.json",
+    "concorde_length": 364,
+    "concorde_time_s": 0.4618563000112772,
+    "concorde_tour": [
+        1,
+        4,
+        2,
+        5,
+        3
+    ],
+    "lkh_length": 364,
+    "lkh_time_s": 0.07912110001780093,
+    "lkh_tour": [
+        3,
+        5,
+        2,
+        4,
+        1
+    ],
+    "lkh_gap_pct": 0.0
+}

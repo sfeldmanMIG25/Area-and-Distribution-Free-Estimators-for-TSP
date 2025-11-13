@@ -1,0 +1,45 @@
+{
+    "instance_name": "N5_D5_G100_ring_9",
+    "n_customers": 5,
+    "dimension": 5,
+    "grid_size": 100,
+    "distribution_type": "ring",
+    "generation_seed": 906032,
+    "coordinates": [
+        [
+            27,
+            32,
+            23,
+            26,
+            32
+        ],
+        [
+            72,
+            70,
+            34,
+            77,
+            19
+        ],
+        [
+            73,
+            16,
+            74,
+            70,
+            78
+        ],
+        [
+            29,
+            71,
+            72,
+            67,
+            70
+        ],
+        [
+            81,
+            22,
+            27,
+            30,
+            63
+        ]
+    ]
+}

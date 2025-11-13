@@ -1,0 +1,38 @@
+{
+    "instance_name": "N7_D2_G10000_grid_14",
+    "n_customers": 7,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "grid",
+    "generation_seed": 1417622,
+    "coordinates": [
+        [
+            2447,
+            8067
+        ],
+        [
+            1741,
+            4452
+        ],
+        [
+            4085,
+            5151
+        ],
+        [
+            9399,
+            1481
+        ],
+        [
+            10000,
+            6824
+        ],
+        [
+            8596,
+            4063
+        ],
+        [
+            4384,
+            7746
+        ]
+    ]
+}

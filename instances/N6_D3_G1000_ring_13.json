@@ -1,0 +1,40 @@
+{
+    "instance_name": "N6_D3_G1000_ring_13",
+    "n_customers": 6,
+    "dimension": 3,
+    "grid_size": 1000,
+    "distribution_type": "ring",
+    "generation_seed": 1307732,
+    "coordinates": [
+        [
+            750,
+            339,
+            769
+        ],
+        [
+            776,
+            796,
+            226
+        ],
+        [
+            838,
+            252,
+            742
+        ],
+        [
+            326,
+            264,
+            756
+        ],
+        [
+            318,
+            296,
+            814
+        ],
+        [
+            172,
+            802,
+            701
+        ]
+    ]
+}

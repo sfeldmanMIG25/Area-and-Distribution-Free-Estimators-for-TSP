@@ -1,0 +1,40 @@
+{
+    "instance_name": "N5_D4_G10000_corn_5",
+    "n_customers": 5,
+    "dimension": 4,
+    "grid_size": 10000,
+    "distribution_type": "corn",
+    "generation_seed": 515834,
+    "coordinates": [
+        [
+            0,
+            0,
+            0,
+            215
+        ],
+        [
+            0,
+            0,
+            9865,
+            9507
+        ],
+        [
+            10000,
+            10000,
+            10000,
+            25
+        ],
+        [
+            440,
+            9977,
+            518,
+            10000
+        ],
+        [
+            9909,
+            71,
+            10000,
+            10000
+        ]
+    ]
+}

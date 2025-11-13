@@ -1,0 +1,45 @@
+{
+    "instance_name": "N5_D5_G100_clus_17",
+    "n_customers": 5,
+    "dimension": 5,
+    "grid_size": 100,
+    "distribution_type": "clus",
+    "generation_seed": 1706039,
+    "coordinates": [
+        [
+            26,
+            51,
+            97,
+            68,
+            95
+        ],
+        [
+            32,
+            43,
+            64,
+            75,
+            40
+        ],
+        [
+            37,
+            57,
+            57,
+            72,
+            82
+        ],
+        [
+            31,
+            54,
+            92,
+            73,
+            96
+        ],
+        [
+            38,
+            63,
+            96,
+            78,
+            93
+        ]
+    ]
+}

@@ -1,0 +1,38 @@
+{
+    "instance_name": "N7_D2_G1000_rand_11",
+    "n_customers": 7,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "rand",
+    "generation_seed": 1108621,
+    "coordinates": [
+        [
+            400,
+            965
+        ],
+        [
+            75,
+            213
+        ],
+        [
+            491,
+            939
+        ],
+        [
+            89,
+            18
+        ],
+        [
+            327,
+            863
+        ],
+        [
+            768,
+            553
+        ],
+        [
+            642,
+            822
+        ]
+    ]
+}

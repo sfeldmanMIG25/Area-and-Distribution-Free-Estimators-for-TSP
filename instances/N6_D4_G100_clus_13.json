@@ -1,0 +1,46 @@
+{
+    "instance_name": "N6_D4_G100_clus_13",
+    "n_customers": 6,
+    "dimension": 4,
+    "grid_size": 100,
+    "distribution_type": "clus",
+    "generation_seed": 1306939,
+    "coordinates": [
+        [
+            8,
+            67,
+            70,
+            14
+        ],
+        [
+            3,
+            76,
+            95,
+            93
+        ],
+        [
+            99,
+            74,
+            78,
+            87
+        ],
+        [
+            0,
+            14,
+            89,
+            17
+        ],
+        [
+            13,
+            13,
+            85,
+            94
+        ],
+        [
+            11,
+            9,
+            72,
+            95
+        ]
+    ]
+}

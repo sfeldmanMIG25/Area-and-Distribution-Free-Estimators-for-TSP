@@ -1,0 +1,45 @@
+{
+    "instance_name": "N7_D3_G100_corr_6",
+    "n_customers": 7,
+    "dimension": 3,
+    "grid_size": 100,
+    "distribution_type": "corr",
+    "generation_seed": 607838,
+    "coordinates": [
+        [
+            59,
+            50,
+            58
+        ],
+        [
+            41,
+            31,
+            31
+        ],
+        [
+            7,
+            20,
+            4
+        ],
+        [
+            22,
+            20,
+            37
+        ],
+        [
+            61,
+            65,
+            71
+        ],
+        [
+            37,
+            36,
+            31
+        ],
+        [
+            3,
+            0,
+            8
+        ]
+    ]
+}

@@ -1,0 +1,35 @@
+{
+    "instance_name": "N5_D3_G10000_norm_4",
+    "n_customers": 5,
+    "dimension": 3,
+    "grid_size": 10000,
+    "distribution_type": "norm",
+    "generation_seed": 415744,
+    "coordinates": [
+        [
+            7368,
+            6387,
+            4167
+        ],
+        [
+            5987,
+            6499,
+            6182
+        ],
+        [
+            4337,
+            1785,
+            4148
+        ],
+        [
+            4585,
+            3224,
+            5674
+        ],
+        [
+            3685,
+            5170,
+            5132
+        ]
+    ]
+}

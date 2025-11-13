@@ -1,0 +1,35 @@
+{
+    "instance_name": "N5_D3_G10000_ring_20",
+    "n_customers": 5,
+    "dimension": 3,
+    "grid_size": 10000,
+    "distribution_type": "ring",
+    "generation_seed": 2015732,
+    "coordinates": [
+        [
+            3027,
+            7656,
+            1869
+        ],
+        [
+            2194,
+            6950,
+            3124
+        ],
+        [
+            3052,
+            2169,
+            7270
+        ],
+        [
+            2259,
+            2381,
+            7072
+        ],
+        [
+            6619,
+            2954,
+            2617
+        ]
+    ]
+}

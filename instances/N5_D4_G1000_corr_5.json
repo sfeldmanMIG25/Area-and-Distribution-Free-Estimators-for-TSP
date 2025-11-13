@@ -1,0 +1,40 @@
+{
+    "instance_name": "N5_D4_G1000_corr_5",
+    "n_customers": 5,
+    "dimension": 4,
+    "grid_size": 1000,
+    "distribution_type": "corr",
+    "generation_seed": 506838,
+    "coordinates": [
+        [
+            189,
+            262,
+            262,
+            243
+        ],
+        [
+            465,
+            554,
+            459,
+            486
+        ],
+        [
+            401,
+            433,
+            341,
+            301
+        ],
+        [
+            744,
+            799,
+            460,
+            801
+        ],
+        [
+            419,
+            449,
+            348,
+            427
+        ]
+    ]
+}

@@ -1,0 +1,35 @@
+{
+    "instance_name": "N5_D3_G100_rand_9",
+    "n_customers": 5,
+    "dimension": 3,
+    "grid_size": 100,
+    "optimal_cost": 296,
+    "optimal_tour": [
+        5,
+        2,
+        4,
+        1,
+        3
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N5_D3_G100_rand_9.json",
+    "concorde_length": 296,
+    "concorde_time_s": 0.4506182000041008,
+    "concorde_tour": [
+        1,
+        3,
+        5,
+        2,
+        4
+    ],
+    "lkh_length": 296,
+    "lkh_time_s": 0.18298159999540076,
+    "lkh_tour": [
+        5,
+        2,
+        4,
+        1,
+        3
+    ],
+    "lkh_gap_pct": 0.0
+}

@@ -1,0 +1,38 @@
+{
+    "instance_name": "N7_D2_G1000_grid_16",
+    "n_customers": 7,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "grid",
+    "generation_seed": 1608622,
+    "coordinates": [
+        [
+            786,
+            910
+        ],
+        [
+            152,
+            803
+        ],
+        [
+            670,
+            649
+        ],
+        [
+            846,
+            0
+        ],
+        [
+            44,
+            679
+        ],
+        [
+            632,
+            93
+        ],
+        [
+            520,
+            533
+        ]
+    ]
+}

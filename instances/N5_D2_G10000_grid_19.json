@@ -1,0 +1,30 @@
+{
+    "instance_name": "N5_D2_G10000_grid_19",
+    "n_customers": 5,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "grid",
+    "generation_seed": 1915622,
+    "coordinates": [
+        [
+            0,
+            4316
+        ],
+        [
+            1085,
+            7666
+        ],
+        [
+            9175,
+            10000
+        ],
+        [
+            6818,
+            866
+        ],
+        [
+            5446,
+            9111
+        ]
+    ]
+}

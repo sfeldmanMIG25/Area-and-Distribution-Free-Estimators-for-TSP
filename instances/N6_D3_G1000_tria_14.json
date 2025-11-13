@@ -1,0 +1,40 @@
+{
+    "instance_name": "N6_D3_G1000_tria_14",
+    "n_customers": 6,
+    "dimension": 3,
+    "grid_size": 1000,
+    "distribution_type": "tria",
+    "generation_seed": 1407732,
+    "coordinates": [
+        [
+            565,
+            175,
+            125
+        ],
+        [
+            466,
+            549,
+            680
+        ],
+        [
+            828,
+            80,
+            432
+        ],
+        [
+            726,
+            0,
+            160
+        ],
+        [
+            679,
+            499,
+            970
+        ],
+        [
+            914,
+            112,
+            0
+        ]
+    ]
+}

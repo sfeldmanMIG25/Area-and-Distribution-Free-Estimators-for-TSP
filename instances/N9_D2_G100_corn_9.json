@@ -1,0 +1,46 @@
+{
+    "instance_name": "N9_D2_G100_corn_9",
+    "n_customers": 9,
+    "dimension": 2,
+    "grid_size": 100,
+    "distribution_type": "corn",
+    "generation_seed": 909734,
+    "coordinates": [
+        [
+            99,
+            100
+        ],
+        [
+            1,
+            1
+        ],
+        [
+            0,
+            0
+        ],
+        [
+            0,
+            0
+        ],
+        [
+            100,
+            1
+        ],
+        [
+            0,
+            100
+        ],
+        [
+            98,
+            4
+        ],
+        [
+            2,
+            1
+        ],
+        [
+            2,
+            98
+        ]
+    ]
+}

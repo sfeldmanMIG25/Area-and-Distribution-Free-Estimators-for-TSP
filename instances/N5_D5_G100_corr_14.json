@@ -1,0 +1,45 @@
+{
+    "instance_name": "N5_D5_G100_corr_14",
+    "n_customers": 5,
+    "dimension": 5,
+    "grid_size": 100,
+    "distribution_type": "corr",
+    "generation_seed": 1406038,
+    "coordinates": [
+        [
+            15,
+            22,
+            25,
+            18,
+            0
+        ],
+        [
+            57,
+            58,
+            75,
+            60,
+            61
+        ],
+        [
+            80,
+            77,
+            70,
+            59,
+            63
+        ],
+        [
+            48,
+            51,
+            73,
+            50,
+            64
+        ],
+        [
+            12,
+            4,
+            19,
+            28,
+            27
+        ]
+    ]
+}

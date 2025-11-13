@@ -1,0 +1,45 @@
+{
+    "instance_name": "N5_D5_G100_corn_17",
+    "n_customers": 5,
+    "dimension": 5,
+    "grid_size": 100,
+    "distribution_type": "corn",
+    "generation_seed": 1706034,
+    "coordinates": [
+        [
+            3,
+            100,
+            0,
+            97,
+            0
+        ],
+        [
+            0,
+            0,
+            96,
+            100,
+            0
+        ],
+        [
+            100,
+            0,
+            99,
+            100,
+            100
+        ],
+        [
+            1,
+            100,
+            0,
+            97,
+            98
+        ],
+        [
+            99,
+            0,
+            93,
+            1,
+            3
+        ]
+    ]
+}

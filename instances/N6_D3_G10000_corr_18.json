@@ -1,0 +1,40 @@
+{
+    "instance_name": "N6_D3_G10000_corr_18",
+    "n_customers": 6,
+    "dimension": 3,
+    "grid_size": 10000,
+    "distribution_type": "corr",
+    "generation_seed": 1816738,
+    "coordinates": [
+        [
+            851,
+            0,
+            78
+        ],
+        [
+            522,
+            1482,
+            0
+        ],
+        [
+            4562,
+            5943,
+            4205
+        ],
+        [
+            5427,
+            4879,
+            4542
+        ],
+        [
+            8413,
+            7500,
+            9638
+        ],
+        [
+            5762,
+            7445,
+            5971
+        ]
+    ]
+}

@@ -1,0 +1,40 @@
+{
+    "instance_name": "N5_D4_G1000_rand_12",
+    "n_customers": 5,
+    "dimension": 4,
+    "grid_size": 1000,
+    "distribution_type": "rand",
+    "generation_seed": 1206821,
+    "coordinates": [
+        [
+            516,
+            318,
+            810,
+            640
+        ],
+        [
+            885,
+            227,
+            181,
+            594
+        ],
+        [
+            902,
+            682,
+            887,
+            59
+        ],
+        [
+            396,
+            113,
+            742,
+            918
+        ],
+        [
+            31,
+            336,
+            947,
+            109
+        ]
+    ]
+}

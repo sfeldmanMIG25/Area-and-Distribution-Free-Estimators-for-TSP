@@ -1,0 +1,50 @@
+{
+    "instance_name": "N8_D3_G100_clus_16",
+    "n_customers": 8,
+    "dimension": 3,
+    "grid_size": 100,
+    "distribution_type": "clus",
+    "generation_seed": 1608839,
+    "coordinates": [
+        [
+            5,
+            76,
+            12
+        ],
+        [
+            13,
+            65,
+            30
+        ],
+        [
+            11,
+            83,
+            22
+        ],
+        [
+            15,
+            61,
+            10
+        ],
+        [
+            15,
+            64,
+            35
+        ],
+        [
+            20,
+            59,
+            25
+        ],
+        [
+            20,
+            76,
+            14
+        ],
+        [
+            9,
+            63,
+            19
+        ]
+    ]
+}

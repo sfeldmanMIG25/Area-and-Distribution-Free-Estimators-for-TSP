@@ -1,0 +1,40 @@
+{
+    "instance_name": "N5_D4_G100_norm_7",
+    "n_customers": 5,
+    "dimension": 4,
+    "grid_size": 100,
+    "distribution_type": "norm",
+    "generation_seed": 705944,
+    "coordinates": [
+        [
+            39,
+            48,
+            52,
+            76
+        ],
+        [
+            53,
+            38,
+            55,
+            63
+        ],
+        [
+            30,
+            49,
+            97,
+            35
+        ],
+        [
+            59,
+            49,
+            73,
+            54
+        ],
+        [
+            55,
+            35,
+            22,
+            71
+        ]
+    ]
+}

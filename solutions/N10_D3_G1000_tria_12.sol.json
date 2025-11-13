@@ -1,0 +1,50 @@
+{
+    "instance_name": "N10_D3_G1000_tria_12",
+    "n_customers": 10,
+    "dimension": 3,
+    "grid_size": 1000,
+    "optimal_cost": 5937,
+    "optimal_tour": [
+        2,
+        4,
+        10,
+        7,
+        6,
+        5,
+        8,
+        3,
+        9,
+        1
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N10_D3_G1000_tria_12.json",
+    "concorde_length": 5937,
+    "concorde_time_s": 0.6758674000157043,
+    "concorde_tour": [
+        1,
+        9,
+        3,
+        8,
+        5,
+        6,
+        7,
+        10,
+        4,
+        2
+    ],
+    "lkh_length": 5937,
+    "lkh_time_s": 0.07561579998582602,
+    "lkh_tour": [
+        2,
+        4,
+        10,
+        7,
+        6,
+        5,
+        8,
+        3,
+        9,
+        1
+    ],
+    "lkh_gap_pct": 0.0
+}

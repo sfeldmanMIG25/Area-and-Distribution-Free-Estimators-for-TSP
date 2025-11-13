@@ -1,0 +1,40 @@
+{
+    "instance_name": "N6_D3_G100_rand_1",
+    "n_customers": 6,
+    "dimension": 3,
+    "grid_size": 100,
+    "distribution_type": "rand",
+    "generation_seed": 106821,
+    "coordinates": [
+        [
+            14,
+            4,
+            38
+        ],
+        [
+            49,
+            33,
+            29
+        ],
+        [
+            99,
+            98,
+            15
+        ],
+        [
+            26,
+            73,
+            98
+        ],
+        [
+            11,
+            32,
+            56
+        ],
+        [
+            67,
+            22,
+            88
+        ]
+    ]
+}

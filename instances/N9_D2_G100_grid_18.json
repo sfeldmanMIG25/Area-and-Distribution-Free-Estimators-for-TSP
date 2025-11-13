@@ -1,0 +1,46 @@
+{
+    "instance_name": "N9_D2_G100_grid_18",
+    "n_customers": 9,
+    "dimension": 2,
+    "grid_size": 100,
+    "distribution_type": "grid",
+    "generation_seed": 1809722,
+    "coordinates": [
+        [
+            22,
+            77
+        ],
+        [
+            54,
+            100
+        ],
+        [
+            18,
+            53
+        ],
+        [
+            6,
+            85
+        ],
+        [
+            45,
+            48
+        ],
+        [
+            10,
+            90
+        ],
+        [
+            89,
+            18
+        ],
+        [
+            75,
+            4
+        ],
+        [
+            3,
+            67
+        ]
+    ]
+}

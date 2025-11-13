@@ -1,0 +1,46 @@
+{
+    "instance_name": "N6_D4_G100_ring_15",
+    "n_customers": 6,
+    "dimension": 4,
+    "grid_size": 100,
+    "distribution_type": "ring",
+    "generation_seed": 1506932,
+    "coordinates": [
+        [
+            23,
+            72,
+            75,
+            19
+        ],
+        [
+            21,
+            27,
+            12,
+            25
+        ],
+        [
+            15,
+            27,
+            78,
+            31
+        ],
+        [
+            33,
+            67,
+            22,
+            32
+        ],
+        [
+            72,
+            18,
+            73,
+            63
+        ],
+        [
+            44,
+            24,
+            79,
+            26
+        ]
+    ]
+}

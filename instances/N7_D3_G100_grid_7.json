@@ -1,0 +1,45 @@
+{
+    "instance_name": "N7_D3_G100_grid_7",
+    "n_customers": 7,
+    "dimension": 3,
+    "grid_size": 100,
+    "distribution_type": "grid",
+    "generation_seed": 707822,
+    "coordinates": [
+        [
+            23,
+            100,
+            29
+        ],
+        [
+            36,
+            71,
+            68
+        ],
+        [
+            100,
+            40,
+            39
+        ],
+        [
+            90,
+            93,
+            15
+        ],
+        [
+            70,
+            45,
+            100
+        ],
+        [
+            78,
+            3,
+            0
+        ],
+        [
+            1,
+            52,
+            5
+        ]
+    ]
+}

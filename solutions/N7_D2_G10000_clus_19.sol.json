@@ -1,0 +1,41 @@
+{
+    "instance_name": "N7_D2_G10000_clus_19",
+    "n_customers": 7,
+    "dimension": 2,
+    "grid_size": 10000,
+    "optimal_cost": 19003,
+    "optimal_tour": [
+        5,
+        3,
+        4,
+        7,
+        2,
+        6,
+        1
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N7_D2_G10000_clus_19.json",
+    "concorde_length": 19003,
+    "concorde_time_s": 0.8948964000155684,
+    "concorde_tour": [
+        1,
+        6,
+        2,
+        7,
+        4,
+        3,
+        5
+    ],
+    "lkh_length": 19003,
+    "lkh_time_s": 0.1342198000056669,
+    "lkh_tour": [
+        5,
+        3,
+        4,
+        7,
+        2,
+        6,
+        1
+    ],
+    "lkh_gap_pct": 0.0
+}

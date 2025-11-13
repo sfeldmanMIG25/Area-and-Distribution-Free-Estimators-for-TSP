@@ -1,0 +1,50 @@
+{
+    "instance_name": "N10_D5_G10000_rand_10",
+    "n_customers": 10,
+    "dimension": 5,
+    "grid_size": 10000,
+    "optimal_cost": 62849,
+    "optimal_tour": [
+        6,
+        1,
+        2,
+        3,
+        7,
+        9,
+        8,
+        10,
+        5,
+        4
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N10_D5_G10000_rand_10.json",
+    "concorde_length": 62849,
+    "concorde_time_s": 0.4870263999910094,
+    "concorde_tour": [
+        1,
+        2,
+        3,
+        7,
+        9,
+        8,
+        10,
+        5,
+        4,
+        6
+    ],
+    "lkh_length": 62849,
+    "lkh_time_s": 0.18183429999044165,
+    "lkh_tour": [
+        6,
+        1,
+        2,
+        3,
+        7,
+        9,
+        8,
+        10,
+        5,
+        4
+    ],
+    "lkh_gap_pct": 0.0
+}

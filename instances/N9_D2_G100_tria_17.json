@@ -1,0 +1,46 @@
+{
+    "instance_name": "N9_D2_G100_tria_17",
+    "n_customers": 9,
+    "dimension": 2,
+    "grid_size": 100,
+    "distribution_type": "tria",
+    "generation_seed": 1709732,
+    "coordinates": [
+        [
+            2,
+            0
+        ],
+        [
+            98,
+            74
+        ],
+        [
+            98,
+            79
+        ],
+        [
+            98,
+            88
+        ],
+        [
+            1,
+            93
+        ],
+        [
+            24,
+            43
+        ],
+        [
+            0,
+            7
+        ],
+        [
+            76,
+            31
+        ],
+        [
+            0,
+            97
+        ]
+    ]
+}

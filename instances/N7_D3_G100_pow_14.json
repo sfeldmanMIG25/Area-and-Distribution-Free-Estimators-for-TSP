@@ -1,0 +1,45 @@
+{
+    "instance_name": "N7_D3_G100_pow_14",
+    "n_customers": 7,
+    "dimension": 3,
+    "grid_size": 100,
+    "distribution_type": "pow",
+    "generation_seed": 1407742,
+    "coordinates": [
+        [
+            100,
+            0,
+            100
+        ],
+        [
+            0,
+            100,
+            100
+        ],
+        [
+            100,
+            0,
+            100
+        ],
+        [
+            0,
+            0,
+            100
+        ],
+        [
+            100,
+            100,
+            100
+        ],
+        [
+            0,
+            100,
+            0
+        ],
+        [
+            0,
+            100,
+            100
+        ]
+    ]
+}

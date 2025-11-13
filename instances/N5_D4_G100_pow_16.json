@@ -1,0 +1,40 @@
+{
+    "instance_name": "N5_D4_G100_pow_16",
+    "n_customers": 5,
+    "dimension": 4,
+    "grid_size": 100,
+    "distribution_type": "pow",
+    "generation_seed": 1605842,
+    "coordinates": [
+        [
+            100,
+            0,
+            0,
+            0
+        ],
+        [
+            100,
+            100,
+            100,
+            100
+        ],
+        [
+            100,
+            100,
+            100,
+            100
+        ],
+        [
+            0,
+            0,
+            100,
+            100
+        ],
+        [
+            100,
+            0,
+            0,
+            100
+        ]
+    ]
+}

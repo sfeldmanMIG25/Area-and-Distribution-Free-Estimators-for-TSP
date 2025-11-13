@@ -1,0 +1,38 @@
+{
+    "instance_name": "N7_D2_G100_ring_5",
+    "n_customers": 7,
+    "dimension": 2,
+    "grid_size": 100,
+    "distribution_type": "ring",
+    "generation_seed": 507732,
+    "coordinates": [
+        [
+            74,
+            22
+        ],
+        [
+            21,
+            78
+        ],
+        [
+            70,
+            76
+        ],
+        [
+            33,
+            78
+        ],
+        [
+            22,
+            75
+        ],
+        [
+            72,
+            70
+        ],
+        [
+            70,
+            28
+        ]
+    ]
+}

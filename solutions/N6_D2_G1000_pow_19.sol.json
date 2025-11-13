@@ -1,0 +1,38 @@
+{
+    "instance_name": "N6_D2_G1000_pow_19",
+    "n_customers": 6,
+    "dimension": 2,
+    "grid_size": 1000,
+    "optimal_cost": 3414,
+    "optimal_tour": [
+        6,
+        1,
+        4,
+        3,
+        2,
+        5
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "c:\\TSP_ND_ML_Project\\instances\\N6_D2_G1000_pow_19.json",
+    "concorde_length": 3414,
+    "concorde_time_s": 0.7619398000242654,
+    "concorde_tour": [
+        1,
+        6,
+        4,
+        3,
+        2,
+        5
+    ],
+    "lkh_length": 3414,
+    "lkh_time_s": 0.16341239999746904,
+    "lkh_tour": [
+        6,
+        1,
+        4,
+        3,
+        2,
+        5
+    ],
+    "lkh_gap_pct": 0.0
+}

@@ -1,0 +1,46 @@
+{
+    "instance_name": "N9_D2_G1000_norm_3",
+    "n_customers": 9,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "norm",
+    "generation_seed": 310644,
+    "coordinates": [
+        [
+            558,
+            685
+        ],
+        [
+            665,
+            514
+        ],
+        [
+            565,
+            538
+        ],
+        [
+            307,
+            547
+        ],
+        [
+            255,
+            472
+        ],
+        [
+            469,
+            80
+        ],
+        [
+            784,
+            703
+        ],
+        [
+            514,
+            585
+        ],
+        [
+            782,
+            415
+        ]
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "instance_name": "N6_D2_G10000_norm_18",
+    "n_customers": 6,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "norm",
+    "generation_seed": 1816644,
+    "coordinates": [
+        [
+            5807,
+            5296
+        ],
+        [
+            3064,
+            4215
+        ],
+        [
+            3496,
+            4349
+        ],
+        [
+            6026,
+            4271
+        ],
+        [
+            5747,
+            4927
+        ],
+        [
+            4846,
+            2469
+        ]
+    ]
+}

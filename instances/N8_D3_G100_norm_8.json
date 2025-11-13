@@ -1,0 +1,50 @@
+{
+    "instance_name": "N8_D3_G100_norm_8",
+    "n_customers": 8,
+    "dimension": 3,
+    "grid_size": 100,
+    "distribution_type": "norm",
+    "generation_seed": 808844,
+    "coordinates": [
+        [
+            45,
+            50,
+            46
+        ],
+        [
+            21,
+            29,
+            30
+        ],
+        [
+            60,
+            64,
+            66
+        ],
+        [
+            57,
+            60,
+            66
+        ],
+        [
+            54,
+            33,
+            80
+        ],
+        [
+            51,
+            56,
+            44
+        ],
+        [
+            55,
+            37,
+            37
+        ],
+        [
+            76,
+            47,
+            86
+        ]
+    ]
+}
