@@ -33,6 +33,12 @@ from sklearn.metrics import silhouette_score
 from scipy.sparse.csgraph import connected_components
 import joblib
 import pandas as pd
+import torch
+import torch.nn as nn
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+import lightgbm as lgb
+
 # --- Configuration ---
 # --- Configuration ---
 SCRIPT_DIR = Path(__file__).parent.resolve()
@@ -51,9 +57,45 @@ BOOSTED_MODEL_DIR = SCRIPT_DIR / "boosted_linear_model"
 BOOSTED_MODEL_PATH = BOOSTED_MODEL_DIR / "boosted_linear_alpha_model.joblib"
 BOOSTED_MODEL_FEATURES_PATH = BOOSTED_MODEL_DIR / "selected_features_stats.csv"
 
+# Path for Piecewise Linear Model
+PIECEWISE_MODEL_DIR = SCRIPT_DIR / "piecewise_linear_model"
+PIECEWISE_ROUTER_MODEL_FILE = PIECEWISE_MODEL_DIR / "router_model.joblib"
+PIECEWISE_EXPERT_BLOB_FILE = PIECEWISE_MODEL_DIR / "expert_blob_model.joblib"
+PIECEWISE_EXPERT_CLUSTER_FILE = PIECEWISE_MODEL_DIR / "expert_cluster_model.joblib"
+PIECEWISE_EXPERT_BLOB_FEATURES_FILE = PIECEWISE_MODEL_DIR / "expert_blob_features.csv"
+PIECEWISE_EXPERT_CLUSTER_FEATURES_FILE = PIECEWISE_MODEL_DIR / "expert_cluster_features.csv"
+
+# Path for LightGBM Model
+LGBM_MODEL_DIR = SCRIPT_DIR / "lgbm_model"
+LGBM_MODEL_FILE = LGBM_MODEL_DIR / "lgbm_alpha_model.joblib"
+
+# Path for PyTorch NN Model (v4)
+NN_V4_MODEL_DIR = SCRIPT_DIR / "nn_model_pytorch_v4_varol"
+NN_V4_MODEL_FILE = NN_V4_MODEL_DIR / "nn_alpha_model.pt"
+NN_V4_PREPROCESSOR_FILE = NN_V4_MODEL_DIR / "nn_preprocessor.joblib"
+
+# Path for PyTorch NN Model (v6)
+NN_V6_MODEL_DIR = SCRIPT_DIR / "nn_model_pytorch_v6_twotower"
+NN_V6_MODEL_FILE = NN_V6_MODEL_DIR / "nn_alpha_model.pt"
+NN_V6_CONT_PREPROCESSOR_FILE = NN_V6_MODEL_DIR / "nn_cont_preprocessor.joblib"
+NN_V6_CAT_PREPROCESSOR_FILE = NN_V6_MODEL_DIR / "nn_cat_preprocessor.joblib"
+
+# Path for PyTorch NN Model (v7)
+NN_V7_MODEL_DIR = SCRIPT_DIR / "nn_model_pytorch_v7_twopass"
+NN_V7_MODEL_FILE = NN_V7_MODEL_DIR / "nn_alpha_model.pt"
+NN_V7_CONT_PREPROCESSOR_FILE = NN_V7_MODEL_DIR / "nn_cont_preprocessor.joblib"
+NN_V7_CAT_PREPROCESSOR_FILE = NN_V7_MODEL_DIR / "nn_cat_preprocessor.joblib"
+
+# Path to V1 feature list (for LightGBM to use all features)
+V1_FEATURES_FILE = SCRIPT_DIR / "tsp_features.csv"
+
+# Constants
+CLUSTER_THRESHOLD = 0.4 # From piecewise and v7 models
+
 # Constants for feature generation
 MAX_D = 5 # From feature_creator.py
 RANDOM_STATE = 42 # From feature_creator.py
+CLUSTER_THRESHOLD = 0.4 # From Multipass_NN_est_alpha.py
 
 # ====================================================================
 # JSON DATA PARSING
@@ -306,9 +348,10 @@ def get_mst_length(nodes_coords):
     total_time = time.perf_counter() - start_time
     return mst_length, total_time
 
+# REPLACE this function
 def estimate_tsp_ml_alpha(nodes_coords, ml_model):
     """
-    Estimates TSP cost using a pre-trained single-output alpha regressor.
+    Estimates TSP cost using the original GART 1.0 alpha regressor.
     Returns: (estimated_cost, time_taken)
     """
     start_time = time.perf_counter()
@@ -316,17 +359,18 @@ def estimate_tsp_ml_alpha(nodes_coords, ml_model):
     n = len(nodes_coords)
     if n <= 1: return 0.0, 0.0
     
-    features_dict, mst_length = calculate_features_and_mst_length(nodes_coords)
+    # 1. Call its dedicated feature generator
+    features_dict, mst_length = _calculate_gart_features(nodes_coords)
     if mst_length == 0:
         return 0.0, time.perf_counter() - start_time
 
-    # --- Single-Output Regressor Logic ---
-    # Use .feature_name_in_ for modern scikit-learn
+    # 2. Get feature list from model
     feature_cols = ml_model.feature_name_in_
     feature_df = pd.DataFrame([features_dict])[feature_cols]
+    
+    # 3. Predict
     predicted_alpha = ml_model.predict(feature_df)[0]
     estimated_cost = predicted_alpha * mst_length
-    # --- End Single-Output Logic ---
 
     final_cost = max(mst_length, estimated_cost) # Bound by MST
     
@@ -337,10 +381,10 @@ def estimate_tsp_ml_alpha(nodes_coords, ml_model):
 # ML FEATURE ENGINEERING
 # ====================================================================
 
-def calculate_features_and_mst_length(coords_list):
+def _calculate_gart_features(coords_list):
     """
-    Optimized function to calculate the full, expanded feature set and MST length.
-    Assumes depot is the first coordinate in the list.
+    Optimized function to calculate the full, expanded feature set and MST length
+    FOR THE GART 1.0 MODEL.
     """
     coords = np.array(coords_list)
     features = {'n': len(coords)}
@@ -790,6 +834,17 @@ def _create_boosted_features(features_df, required_features_set):
 # ====================================================================
 # NEW TIMED ML-TSP ESTIMATOR FUNCTIONS (V3)
 # ====================================================================
+# ADD this function to the loader section
+def load_gart_model(model_path=GART_MODEL_PATH):
+    """
+    Public helper to load the original GART 1.0 model.
+    """
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"GART model file not found: {model_path}")
+            
+    model = joblib.load(model_path)
+    # This model is simple and doesn't require a separate feature list
+    return model
 
 def load_model_and_features(model_path, features_csv_path):
     """
@@ -854,6 +909,644 @@ def estimate_tsp_from_model(nodes_coords, n, d, ml_model, feature_list_set, use_
     estimated_cost = predicted_alpha * mst_length
 
     final_cost = max(mst_length, estimated_cost) # Bound by MST
+    
+    total_time = time.perf_counter() - start_time
+    return final_cost, total_time
+
+# ====================================================================
+# PYTORCH NN MODEL DEFINITIONS
+# ====================================================================
+
+# --- From nn_est_alpha_v4.py ---
+class MLP_v4(nn.Module):
+    """Simple MLP with dynamic layers and sigmoid output."""
+    def __init__(self, n_features_in, n_layers, n_units, dropout_rate, activation):
+        super(MLP_v4, self).__init__()
+        layers = []
+        in_features = n_features_in
+        for _ in range(n_layers):
+            layers.append(nn.Linear(in_features, n_units))
+            if activation == 'tanh':
+                layers.append(nn.Tanh())
+            elif activation == 'leaky_relu':
+                layers.append(nn.LeakyReLU())
+            else:
+                layers.append(nn.ReLU())
+            layers.append(nn.Dropout(dropout_rate))
+            in_features = n_units
+        layers.append(nn.Linear(in_features, 1))
+        layers.append(nn.Sigmoid())
+        self.network = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.network(x)
+
+# --- From nn_est_alpha_v6.py and Multipass_NN_est_alpha.py ---
+# Note: Renamed helper to avoid conflicts
+def _build_mlp_tower_v6(in_features, n_units_list, activation, dropout_rate):
+    layers = []
+    for n_units in n_units_list:
+        layers.append(nn.Linear(in_features, n_units))
+        if activation == 'leaky_relu':
+            layers.append(nn.LeakyReLU())
+        else:
+            layers.append(nn.ReLU())
+        layers.append(nn.Dropout(dropout_rate))
+        in_features = n_units
+    return nn.Sequential(*layers)
+
+class TabularNet_v6(nn.Module):
+    """ "Two-Tower" SOTA model for tabular data (V6)."""
+    def __init__(self, n_cont_features, n_cat_features, params):
+        super(TabularNet_v6, self).__init__()
+        self.cont_tower = _build_mlp_tower_v6(
+            in_features=n_cont_features,
+            n_layers=params['n_layers_cont'], # V6 uses this
+            n_units_list=params['n_units_cont_list'],
+            activation=params['activation'],
+            dropout_rate=params['dropout_rate']
+        )
+        self.cat_tower = _build_mlp_tower_v6(
+            in_features=n_cat_features,
+            n_layers=params['n_layers_cat'], # V6 uses this
+            n_units_list=params['n_units_cat_list'],
+            activation=params['activation'],
+            dropout_rate=params['dropout_rate']
+        )
+        head_input_size = params['n_units_cont_list'][-1] + params['n_units_cat_list'][-1]
+        self.head = _build_mlp_tower_v6(
+            in_features=head_input_size,
+            n_layers=params['n_layers_head'], # V6 uses this
+            n_units_list=params['n_units_head_list'],
+            activation=params['activation'],
+            dropout_rate=params['dropout_rate']
+        )
+        self.output_layer = nn.Sequential(
+            nn.Linear(params['n_units_head_list'][-1], 1),
+            nn.Sigmoid()
+        )
+    def forward(self, x_cont, x_cat):
+        cont_embedding = self.cont_tower(x_cont)
+        cat_embedding = self.cat_tower(x_cat)
+        combined = torch.cat([cont_embedding, cat_embedding], dim=1)
+        head_output = self.head(combined)
+        return self.output_layer(head_output)
+
+class TabularNet_v7(nn.Module):
+    """ "Two-Tower" SOTA model for tabular data (V7)."""
+    def __init__(self, n_cont_features, n_cat_features, params):
+        super(TabularNet_v7, self).__init__()
+        # V7 uses a slightly different param structure
+        self.cont_tower = _build_mlp_tower_v6(
+            in_features=n_cont_features,
+            n_units_list=params['n_units_cont_list'],
+            activation=params['activation'],
+            dropout_rate=params['dropout_rate']
+        )
+        self.cat_tower = _build_mlp_tower_v6(
+            in_features=n_cat_features,
+            n_units_list=params['n_units_cat_list'],
+            activation=params['activation'],
+            dropout_rate=params['dropout_rate']
+        )
+        head_input_size = params['n_units_cont_list'][-1] + params['n_units_cat_list'][-1]
+        self.head = _build_mlp_tower_v6(
+            in_features=head_input_size,
+            n_units_list=params['n_units_head_list'],
+            activation=params['activation'],
+            dropout_rate=params['dropout_rate']
+        )
+        self.output_layer = nn.Sequential(
+            nn.Linear(params['n_units_head_list'][-1], 1),
+            nn.Sigmoid()
+        )
+    def forward(self, x_cont, x_cat):
+        cont_embedding = self.cont_tower(x_cont)
+        cat_embedding = self.cat_tower(x_cat)
+        combined = torch.cat([cont_embedding, cat_embedding], dim=1)
+        head_output = self.head(combined)
+        return self.output_layer(head_output)
+
+# ====================================================================
+# V2 FEATURE ENGINEERING (for PyTorch NN Model v7)
+# ====================================================================
+
+def _compute_tree_diameter_v2(mst_adj, n):
+    def farthest(start_node):
+        distances = np.full(n, -1.0)
+        distances[start_node] = 0.0
+        queue = deque([start_node])
+        farthest_node, max_dist = start_node, 0.0
+        while queue:
+            u = queue.popleft()
+            if distances[u] > max_dist:
+                max_dist = distances[u]
+                farthest_node = u
+            for v, weight in mst_adj[u]:
+                if distances[v] < 0:
+                    distances[v] = distances[u] + weight
+                    queue.append(v)
+        final_farthest_node = np.argmax(distances)
+        return final_farthest_node, distances[final_farthest_node]
+    if n < 2: return 0.0
+    node1, _ = farthest(0)
+    _, diameter = farthest(node1)
+    return diameter
+
+def _compute_sub_cluster_features_v2(sub_coords, sub_dist_matrix):
+    sub_n = len(sub_coords)
+    sub_feats = {'sub_pca_ratio': np.nan, 'sub_nn_mean': np.nan, 'sub_density': np.nan}
+    if sub_n < 2: return sub_feats
+    
+    if sub_n >= 2 and sub_coords.shape[1] > 1:
+        try:
+            sub_pca = PCA(n_components=2); sub_pca.fit(sub_coords); ev = sub_pca.explained_variance_
+            if len(ev) > 1 and ev[-1] > 1e-9: sub_feats['sub_pca_ratio'] = ev[0] / ev[-1]
+        except ValueError: pass
+    
+    np.fill_diagonal(sub_dist_matrix, np.inf)
+    sub_feats['sub_nn_mean'] = np.mean(np.min(sub_dist_matrix, axis=1))
+    
+    dim_ranges = np.ptp(sub_coords, axis=0); dim_ranges[dim_ranges < 1e-9] = 1e-9
+    sub_hypervolume = np.prod(dim_ranges)
+    if sub_hypervolume > 1e-9: sub_feats['sub_density'] = sub_n / sub_hypervolume
+    else: sub_feats['sub_density'] = np.inf
+    return sub_feats
+
+def _compute_cluster_features_v2(coords, dist_matrix, mst_csr, n):
+    K_MIN = 2; K_MAX = max(K_MIN, int(np.ceil(np.log(n))))
+    n_unique_points = len(np.unique(coords, axis=0))
+    default_return = { 'k_num_clusters': np.nan, 'k_silhouette_score': np.nan, 
+                       'k_alignment_error': np.nan, 'best_mst_labels': None, 
+                       'best_kmeans_centroids': None }
+    if n < 4 or K_MAX < K_MIN or n_unique_points < K_MIN: return default_return
+
+    best_k = -1; min_alignment_error = np.inf
+    best_mst_labels = None; best_kmeans_centroids = None
+    mst_data = mst_csr.data
+    
+    for k in range(K_MIN, min(K_MAX, n_unique_points) + 1):
+        num_cuts = k - 1
+        if num_cuts >= len(mst_data): continue
+        cut_indices = np.argpartition(mst_data, -num_cuts)[-num_cuts:]
+        temp_csr = mst_csr.copy(); temp_csr.data[cut_indices] = 0; temp_csr.eliminate_zeros()
+        n_components, mst_labels = connected_components(csgraph=temp_csr, directed=False, return_labels=True)
+        
+        if n_components != k: continue
+        mst_centroids = np.array([coords[mst_labels == i].mean(axis=0) for i in range(k)])
+        kmeans = KMeans(n_clusters=k, n_init=1, max_iter=10, random_state=RANDOM_STATE).fit(coords)
+        kmeans_centroids = kmeans.cluster_centers_
+        
+        alignment_dist_matrix = cdist(mst_centroids, kmeans_centroids)
+        row_ind, col_ind = linear_sum_assignment(alignment_dist_matrix)
+        current_alignment_error = alignment_dist_matrix[row_ind, col_ind].sum()
+        
+        if current_alignment_error < min_alignment_error:
+            min_alignment_error = current_alignment_error; best_k = k
+            best_mst_labels = mst_labels; best_kmeans_centroids = kmeans_centroids[col_ind] 
+
+    if best_k == -1: return default_return
+    try: current_silhouette_score = silhouette_score(coords, best_mst_labels, metric='euclidean')
+    except ValueError: current_silhouette_score = np.nan
+    if current_silhouette_score < CLUSTER_THRESHOLD:
+        return { 'k_num_clusters': best_k, 'k_silhouette_score': current_silhouette_score, 
+                 'k_alignment_error': min_alignment_error, 'best_mst_labels': None, 
+                 'best_kmeans_centroids': None }
+    return { 'k_num_clusters': best_k, 'k_silhouette_score': current_silhouette_score, 
+             'k_alignment_error': min_alignment_error, 'best_mst_labels': best_mst_labels, 
+             'best_kmeans_centroids': best_kmeans_centroids }
+
+def _calculate_nn_v7_features(nodes_coords, n, d, grid_size):
+    """
+    Computes the V2 features from Multipass_NN_est_alpha.py
+    """
+    coords = nodes_coords
+    features = {'n_customers': n, 'dimension': d, 'grid_size': grid_size}
+
+    dim_ranges = np.ptp(coords, axis=0); dim_ranges[dim_ranges < 1e-9] = 1e-9 
+    features['bounding_hypervolume'] = np.prod(dim_ranges)
+    if features['bounding_hypervolume'] > 1e-9:
+        features['node_density'] = n / features['bounding_hypervolume']
+        features['aspect_ratio'] = np.max(dim_ranges) / np.min(dim_ranges)
+    else:
+        features['node_density'] = np.inf; features['aspect_ratio'] = 1.0
+
+    per_dim_mean = np.mean(coords, axis=0); per_dim_std = np.std(coords, axis=0)
+    for i in range(MAX_D):
+        features[f'mean_dim_{i}'] = per_dim_mean[i] if i < d else np.nan
+        features[f'std_dim_{i}'] = per_dim_std[i] if i < d else np.nan
+
+    mst_total_length = 0.0
+    if n > 1:
+        centroid_dists = np.linalg.norm(coords - per_dim_mean, axis=1)
+        features.update({'centroid_dist_mean': np.mean(centroid_dists), 'centroid_dist_std': np.std(centroid_dists)})
+        dist_matrix = cdist(coords, coords, 'euclidean')
+        upper_tri = dist_matrix[np.triu_indices(n, k=1)]
+        features.update({'pairwise_mean': np.mean(upper_tri), 'pairwise_std': np.std(upper_tri), 'pairwise_skew': stats.skew(upper_tri)})
+        np.fill_diagonal(dist_matrix, np.inf)
+        nn_dists = np.min(dist_matrix, axis=1)
+        features.update({'nn_mean': np.mean(nn_dists), 'nn_std': np.std(nn_dists)})
+
+        mst_csr = minimum_spanning_tree(dist_matrix)
+        mst_edges = mst_csr.data; mst_edge_mean = np.mean(mst_edges); mst_edge_std = np.std(mst_edges)
+        mst_total_length = np.sum(mst_edges)
+        features['mst_total_length'] = mst_total_length
+        features['mst_edge_mean'] = mst_edge_mean; features['mst_edge_std'] = mst_edge_std
+        features['mst_edge_skew'] = stats.skew(mst_edges) if mst_edge_std > 1e-9 else 0.0
+        
+        cluster_info = _compute_cluster_features_v2(coords, dist_matrix, mst_csr, n)
+        features.update({
+            'k_num_clusters': cluster_info['k_num_clusters'],
+            'k_silhouette_score': cluster_info['k_silhouette_score'],
+            'k_alignment_error': cluster_info['k_alignment_error']
+        })
+        
+        if cluster_info['best_mst_labels'] is not None:
+            best_k = cluster_info['k_num_clusters']; best_labels = cluster_info['best_mst_labels']
+            best_centroids = cluster_info['best_kmeans_centroids']
+            cluster_sizes = np.bincount(best_labels)
+            features['k_size_ratio'] = np.max(cluster_sizes) / np.min(cluster_sizes)
+            sub_pca_ratios, sub_nn_means, sub_densities, total_intra_mst = [], [], [], 0
+            
+            for i in range(int(best_k)):
+                cluster_indices = np.where(best_labels == i)[0]
+                if len(cluster_indices) < 2: continue
+                sub_coords = coords[cluster_indices]
+                sub_dist_matrix = dist_matrix[cluster_indices, :][:, cluster_indices]
+                sub_feats = _compute_sub_cluster_features_v2(sub_coords, sub_dist_matrix)
+                sub_pca_ratios.append(sub_feats['sub_pca_ratio']); sub_nn_means.append(sub_feats['sub_nn_mean']); sub_densities.append(sub_feats['sub_density'])
+                total_intra_mst += minimum_spanning_tree(sub_dist_matrix).sum()
+            
+            features['k_total_intra_mst_cost'] = total_intra_mst
+            with np.warnings.catch_warnings():
+                np.warnings.filterwarnings('ignore', r'Mean of empty slice|Degrees of freedom')
+                features['k_pca_ratio_mean'] = np.nanmean(sub_pca_ratios); features['k_pca_ratio_std'] = np.nanstd(sub_pca_ratios)
+                features['k_nn_mean_mean'] = np.nanmean(sub_nn_means); features['k_nn_mean_std'] = np.nanstd(sub_nn_means)
+                features['k_density_mean'] = np.nanmean(sub_densities); features['k_density_std'] = np.nanstd(sub_densities)
+
+            centroid_dist_matrix = cdist(best_centroids, best_centroids)
+            features['k_inter_centroid_mst_cost'] = minimum_spanning_tree(centroid_dist_matrix).sum()
+            features['k_cost_ratio'] = features['k_inter_centroid_mst_cost'] / (total_intra_mst + 1e-9)
+        else:
+            sub_feat_names = ['k_size_ratio', 'k_total_intra_mst_cost', 'k_pca_ratio_mean', 'k_pca_ratio_std',
+                              'k_nn_mean_mean', 'k_nn_mean_std', 'k_density_mean', 'k_density_std', 
+                              'k_inter_centroid_mst_cost', 'k_cost_ratio']
+            for name in sub_feat_names: features[name] = np.nan
+    
+    if n >= 2 and d >= 1:
+        try:
+            pca = PCA(); pca.fit(coords); evr = pca.explained_variance_ratio_
+            if len(evr) > 1 and evr[-1] > 1e-9: features['pca_eigenvalue_ratio'] = evr[0] / evr[-1]
+            for i in range(MAX_D): features[f'pca_evr_dim_{i}'] = evr[i] if i < len(evr) else np.nan
+        except ValueError: pass
+    
+    final_df = pd.DataFrame([features])
+    return final_df, mst_total_length
+
+# ====================================================================
+# NEW TIMED ML-TSP ESTIMATOR FUNCTIONS (V3 - All Models)
+# ====================================================================
+
+# --- New Model Loaders ---
+
+def load_lgbm_model(
+    model_path=LGBM_MODEL_FILE, 
+    features_csv_path=V1_FEATURES_FILE
+):
+    """
+    Loads the LightGBM model and the *full* V1 feature list.
+    """
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"LGBM model file not found: {model_path}")
+    if not os.path.exists(features_csv_path):
+        raise FileNotFoundError(f"V1 features file not found: {features_csv_path}")
+        
+    model = joblib.load(model_path)
+    
+    df = pd.read_csv(features_csv_path, nrows=0)
+    features_to_drop = [
+        'instance_name', 'optimal_cost', 'optimal_solver', 'solve_time_s',
+        'mst_total_length', 'alpha', 'split', 'distribution_type'
+    ]
+    existing_cols_to_drop = [col for col in features_to_drop if col in df.columns]
+    feature_list_set = set(df.drop(columns=existing_cols_to_drop).columns)
+    
+    return model, feature_list_set
+
+def load_piecewise_models(
+    router_path=PIECEWISE_ROUTER_MODEL_FILE,
+    blob_model_path=PIECEWISE_EXPERT_BLOB_FILE,
+    blob_features_path=PIECEWISE_EXPERT_BLOB_FEATURES_FILE,
+    cluster_model_path=PIECEWISE_EXPERT_CLUSTER_FILE,
+    cluster_features_path=PIECEWISE_EXPERT_CLUSTER_FEATURES_FILE
+):
+    """
+    Loads the router and both expert models + their feature lists.
+    Returns: (router_model, blob_model, blob_features_set, cluster_model, cluster_features_set)
+    """
+    router_model = joblib.load(router_path)
+    blob_model, blob_features_set = load_model_and_features(
+        blob_model_path, blob_features_path
+    )
+    cluster_model, cluster_features_set = load_model_and_features(
+        cluster_model_path, cluster_features_path
+    )
+    return router_model, blob_model, blob_features_set, cluster_model, cluster_features_set
+
+def load_pytorch_nn_v4(
+    model_path=NN_V4_MODEL_FILE,
+    preprocessor_path=NN_V4_PREPROCESSOR_FILE
+):
+    """
+    Loads the PyTorch V4 model checkpoint, preprocessor, and reconstructs the model.
+    Returns: (model, preprocessor, device)
+    """
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"NN_V4 model file not found: {model_path}")
+    if not os.path.exists(preprocessor_path):
+        raise FileNotFoundError(f"NN_V4 preprocessor not found: {preprocessor_path}")
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    checkpoint = torch.load(model_path, map_location=device)
+    preprocessor = joblib.load(preprocessor_path)
+    
+    model_params = checkpoint['model_params']
+    model = MLP_v4(**model_params) # Unpack params
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.to(device)
+    model.eval()
+    
+    return model, preprocessor, device
+
+def load_pytorch_nn_v6(
+    model_path=NN_V6_MODEL_FILE,
+    cont_preprocessor_path=NN_V6_CONT_PREPROCESSOR_FILE,
+    cat_preprocessor_path=NN_V6_CAT_PREPROCESSOR_FILE
+):
+    """
+    Loads the PyTorch V6 model, preprocessors, and reconstructs the model.
+    Returns: (model, cont_preprocessor, cat_preprocessor, device)
+    """
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"NN_V6 model file not found: {model_path}")
+    if not os.path.exists(cont_preprocessor_path):
+        raise FileNotFoundError(f"NN_V6 cont preprocessor not found: {cont_preprocessor_path}")
+    if not os.path.exists(cat_preprocessor_path):
+        raise FileNotFoundError(f"NN_V6 cat preprocessor not found: {cat_preprocessor_path}")
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    checkpoint = torch.load(model_path, map_location=device)
+    cont_preprocessor = joblib.load(cont_preprocessor_path)
+    cat_preprocessor = joblib.load(cat_preprocessor_path)
+    
+    model_params = checkpoint['model_params']
+    model = TabularNet_v6(
+        n_cont_features=model_params['n_cont_features'],
+        n_cat_features=model_params['n_cat_features'],
+        params=model_params
+    )
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.to(device)
+    model.eval()
+    
+    return model, cont_preprocessor, cat_preprocessor, device
+
+def load_pytorch_nn_v7(
+    model_path=NN_V7_MODEL_FILE,
+    cont_preprocessor_path=NN_V7_CONT_PREPROCESSOR_FILE,
+    cat_preprocessor_path=NN_V7_CAT_PREPROCESSOR_FILE
+):
+    """
+    Loads the PyTorch V7 model, preprocessors, and reconstructs the model.
+    Returns: (model, cont_preprocessor, cat_preprocessor, device)
+    """
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"NN_V7 model file not found: {model_path}")
+    if not os.path.exists(cont_preprocessor_path):
+        raise FileNotFoundError(f"NN_V7 cont preprocessor not found: {cont_preprocessor_path}")
+    if not os.path.exists(cat_preprocessor_path):
+        raise FileNotFoundError(f"NN_V7 cat preprocessor not found: {cat_preprocessor_path}")
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    checkpoint = torch.load(model_path, map_location=device)
+    cont_preprocessor = joblib.load(cont_preprocessor_path)
+    cat_preprocessor = joblib.load(cat_preprocessor_path)
+    
+    model_params = checkpoint['model_params']
+    model = TabularNet_v7(
+        n_cont_features=model_params['n_cont_features'],
+        n_cat_features=model_params['n_cat_features'],
+        params=model_params
+    )
+    model.load_state_dict(checkpoint['model_state_dict'])
+    model.to(device)
+    model.eval()
+    
+    return model, cont_preprocessor, cat_preprocessor, device
+
+
+# --- New Estimator Functions ---
+
+def estimate_tsp_lgbm(
+    nodes_coords, n, d, grid_size, 
+    ml_model, all_v1_features_set
+):
+    """
+    Estimates TSP cost using the loaded LightGBM model.
+    Requires *all* V1 features to be calculated.
+    
+    Returns: (estimated_cost, time_taken)
+    """
+    start_time = time.perf_counter()
+    
+    if n <= 1: return 0.0, 0.0
+    
+    features_dict, mst_length = _calculate_minimal_features(
+        nodes_coords, n, d, all_v1_features_set
+    )
+    if mst_length == 0:
+        return 0.0, time.perf_counter() - start_time
+    
+    features_df = pd.DataFrame([features_dict])
+    features_df['grid_size'] = grid_size
+    
+    categorical_features = ['dimension', 'grid_size']
+    for col in categorical_features:
+        if col in features_df.columns:
+            features_df[col] = features_df[col].astype('category')
+            
+    X_predict = features_df[ml_model.feature_name_]
+
+    predicted_alpha = ml_model.predict(X_predict)[0]
+    estimated_cost = predicted_alpha * mst_length
+
+    final_cost = max(mst_length, min(2.0 * mst_length, estimated_cost))
+    
+    total_time = time.perf_counter() - start_time
+    return final_cost, total_time
+
+
+def estimate_tsp_piecewise(
+    nodes_coords, n, d, 
+    router_model,
+    blob_model, blob_features_set,
+    cluster_model, cluster_features_set
+):
+    """
+    Estimates TSP cost using the piecewise "mixture of experts" model.
+    
+    Returns: (estimated_cost, time_taken)
+    """
+    start_time = time.perf_counter()
+    
+    if n <= 1: return 0.0, 0.0
+    
+    required_features_set = blob_features_set.union(cluster_features_set)
+    required_features_set.add('k_silhouette_score')
+    required_features_set.add('is_clustered') 
+    
+    features_dict, mst_length = _calculate_minimal_features(
+        nodes_coords, n, d, required_features_set
+    )
+    if mst_length == 0:
+        return 0.0, time.perf_counter() - start_time
+    
+    features_df = pd.DataFrame([features_dict])
+    features_df = _create_boosted_features(features_df.copy(), required_features_set)
+    features_df['is_clustered'] = (features_df['k_silhouette_score'] > CLUSTER_THRESHOLD).fillna(False)
+    
+    is_clustered = router_model.predict(features_df[['is_clustered']])[0]
+    
+    if is_clustered:
+        expert_model = cluster_model
+        expert_features = cluster_model.feature_name_in_
+    else:
+        expert_model = blob_model
+        expert_features = blob_model.feature_name_in_
+        
+    for col in expert_features:
+        if col not in features_df.columns:
+            features_df[col] = np.nan
+            
+    X_predict = features_df[expert_features]
+    
+    predicted_alpha = expert_model.predict(X_predict)[0]
+    estimated_cost = predicted_alpha * mst_length
+
+    final_cost = max(mst_length, min(2.0 * mst_length, estimated_cost))
+    
+    total_time = time.perf_counter() - start_time
+    return final_cost, total_time
+
+def estimate_tsp_pytorch_nn_v4(
+    nodes_coords, n, d, grid_size,
+    model, preprocessor, all_v1_features_set, device
+):
+    """
+    Estimates TSP cost using the loaded PyTorch NN (v4) model.
+    
+    Returns: (estimated_cost, time_taken)
+    """
+    start_time = time.perf_counter()
+    
+    if n <= 1: return 0.0, 0.0
+
+    features_dict, mst_length = _calculate_minimal_features(
+        nodes_coords, n, d, all_v1_features_set
+    )
+    if mst_length == 0:
+        return 0.0, time.perf_counter() - start_time
+        
+    features_df = pd.DataFrame([features_dict])
+    features_df['grid_size'] = grid_size
+    
+    X_tf = preprocessor.transform(features_df)
+    X_tensor = torch.tensor(X_tf, dtype=torch.float32).to(device)
+
+    with torch.no_grad():
+        output_scaled = model(X_tensor)
+    
+    predicted_alpha_scaled = output_scaled.cpu().numpy()[0][0]
+    predicted_alpha = 1.0 + predicted_alpha_scaled # Unscale
+    estimated_cost = predicted_alpha * mst_length
+    
+    final_cost = max(mst_length, min(2.0 * mst_length, estimated_cost))
+    
+    total_time = time.perf_counter() - start_time
+    return final_cost, total_time
+
+def estimate_tsp_pytorch_nn_v6(
+    nodes_coords, n, d, grid_size,
+    model, cont_preprocessor, cat_preprocessor, all_v1_features_set, device
+):
+    """
+    Estimates TSP cost using the loaded PyTorch NN (v6) model.
+    
+    Returns: (estimated_cost, time_taken)
+    """
+    start_time = time.perf_counter()
+    
+    if n <= 1: return 0.0, 0.0
+
+    features_dict, mst_length = _calculate_minimal_features(
+        nodes_coords, n, d, all_v1_features_set
+    )
+    if mst_length == 0:
+        return 0.0, time.perf_counter() - start_time
+        
+    features_df = pd.DataFrame([features_dict])
+    features_df['grid_size'] = grid_size
+
+    X_cont_tf = cont_preprocessor.transform(features_df)
+    X_cat_tf = cat_preprocessor.transform(features_df)
+    
+    X_cont_tensor = torch.tensor(X_cont_tf, dtype=torch.float32).to(device)
+    X_cat_tensor = torch.tensor(X_cat_tf, dtype=torch.float32).to(device)
+
+    with torch.no_grad():
+        output_scaled = model(X_cont_tensor, X_cat_tensor)
+    
+    predicted_alpha_scaled = output_scaled.cpu().numpy()[0][0]
+    predicted_alpha = 1.0 + predicted_alpha_scaled # Unscale
+    estimated_cost = predicted_alpha * mst_length
+    
+    final_cost = max(mst_length, min(2.0 * mst_length, estimated_cost))
+    
+    total_time = time.perf_counter() - start_time
+    return final_cost, total_time
+
+def estimate_tsp_pytorch_nn_v7(
+    nodes_coords, n, d, grid_size,
+    model, cont_preprocessor, cat_preprocessor, device
+):
+    """
+    Estimates TSP cost using the loaded PyTorch NN (v7) model.
+    Uses the separate V2 feature generator.
+    
+    Returns: (estimated_cost, time_taken)
+    """
+    start_time = time.perf_counter()
+    
+    if n <= 1: return 0.0, 0.0
+
+    features_df, mst_length = _calculate_nn_v7_features(nodes_coords, n, d, grid_size)
+    if mst_length == 0:
+        return 0.0, time.perf_counter() - start_time
+        
+    X_cont_tf = cont_preprocessor.transform(features_df)
+    X_cat_tf = cat_preprocessor.transform(features_df)
+    
+    X_cont_tensor = torch.tensor(X_cont_tf, dtype=torch.float32).to(device)
+    X_cat_tensor = torch.tensor(X_cat_tf, dtype=torch.float32).to(device)
+
+    with torch.no_grad():
+        output_scaled = model(X_cont_tensor, X_cat_tensor)
+    
+    predicted_alpha_scaled = output_scaled.cpu().numpy()[0][0]
+    predicted_alpha = 1.0 + predicted_alpha_scaled
+    estimated_cost = predicted_alpha * mst_length
+    
+    final_cost = max(mst_length, min(2.0 * mst_length, estimated_cost))
     
     total_time = time.perf_counter() - start_time
     return final_cost, total_time
