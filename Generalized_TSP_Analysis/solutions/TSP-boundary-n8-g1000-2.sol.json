@@ -1,0 +1,44 @@
+{
+    "instance_name": "TSP-boundary-n8-g1000-2",
+    "n_customers": 8,
+    "dimension": 2,
+    "grid_size": 1000,
+    "optimal_cost": 3121,
+    "optimal_tour": [
+        1,
+        4,
+        5,
+        2,
+        7,
+        3,
+        8,
+        6
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "C:\\Area-and-Distribution-Free-Estimators-for-TSP\\Generalized_TSP_Analysis\\instances\\TSP-boundary-n8-g1000-2.json",
+    "concorde_length": 3121,
+    "concorde_time_s": 0.34523629999603145,
+    "concorde_tour": [
+        1,
+        6,
+        8,
+        3,
+        7,
+        2,
+        5,
+        4
+    ],
+    "lkh_length": 3121,
+    "lkh_time_s": 0.05101590001140721,
+    "lkh_tour": [
+        1,
+        4,
+        5,
+        2,
+        7,
+        3,
+        8,
+        6
+    ],
+    "lkh_gap_pct": 0.0
+}

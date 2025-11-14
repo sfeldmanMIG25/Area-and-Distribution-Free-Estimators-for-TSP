@@ -1,0 +1,30 @@
+{
+    "instance_name": "TSP-correlated-n5-g1000-3",
+    "n_customers": 5,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "correlated",
+    "generation_seed": 55564,
+    "coordinates": [
+        [
+            956,
+            817
+        ],
+        [
+            262,
+            272
+        ],
+        [
+            3,
+            54
+        ],
+        [
+            416,
+            505
+        ],
+        [
+            185,
+            127
+        ]
+    ]
+}

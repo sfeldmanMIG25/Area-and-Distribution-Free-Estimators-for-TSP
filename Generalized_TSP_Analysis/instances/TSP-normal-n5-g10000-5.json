@@ -1,0 +1,30 @@
+{
+    "instance_name": "TSP-normal-n5-g10000-5",
+    "n_customers": 5,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "normal",
+    "generation_seed": 1206154,
+    "coordinates": [
+        [
+            4261,
+            5781
+        ],
+        [
+            3633,
+            4410
+        ],
+        [
+            4896,
+            3357
+        ],
+        [
+            1821,
+            5762
+        ],
+        [
+            5186,
+            6367
+        ]
+    ]
+}

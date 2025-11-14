@@ -1,0 +1,50 @@
+{
+    "instance_name": "TSP-squeezed_uniform-n10-g10000-5",
+    "n_customers": 10,
+    "dimension": 2,
+    "grid_size": 10000,
+    "optimal_cost": 24258,
+    "optimal_tour": [
+        3,
+        10,
+        1,
+        6,
+        2,
+        5,
+        8,
+        4,
+        7,
+        9
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "C:\\Area-and-Distribution-Free-Estimators-for-TSP\\Generalized_TSP_Analysis\\instances\\TSP-squeezed_uniform-n10-g10000-5.json",
+    "concorde_length": 24258,
+    "concorde_time_s": 0.8611232999974163,
+    "concorde_tour": [
+        1,
+        6,
+        2,
+        5,
+        8,
+        4,
+        7,
+        9,
+        3,
+        10
+    ],
+    "lkh_length": 24258,
+    "lkh_time_s": 0.04177289998915512,
+    "lkh_tour": [
+        3,
+        10,
+        1,
+        6,
+        2,
+        5,
+        8,
+        4,
+        7,
+        9
+    ],
+    "lkh_gap_pct": 0.0
+}

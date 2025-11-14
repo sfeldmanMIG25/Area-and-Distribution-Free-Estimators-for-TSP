@@ -1,0 +1,30 @@
+{
+    "instance_name": "TSP-x_central-n5-g10000-3",
+    "n_customers": 5,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "x_central",
+    "generation_seed": 1234463,
+    "coordinates": [
+        [
+            4547,
+            329
+        ],
+        [
+            4036,
+            9775
+        ],
+        [
+            1420,
+            733
+        ],
+        [
+            5147,
+            8064
+        ],
+        [
+            7407,
+            1411
+        ]
+    ]
+}

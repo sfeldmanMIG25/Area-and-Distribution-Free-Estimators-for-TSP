@@ -1,0 +1,30 @@
+{
+    "instance_name": "TSP-boundary-n5-g10000-2",
+    "n_customers": 5,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "boundary",
+    "generation_seed": 1228370,
+    "coordinates": [
+        [
+            99,
+            8864
+        ],
+        [
+            9830,
+            1548
+        ],
+        [
+            6649,
+            6787
+        ],
+        [
+            7712,
+            7933
+        ],
+        [
+            578,
+            9160
+        ]
+    ]
+}

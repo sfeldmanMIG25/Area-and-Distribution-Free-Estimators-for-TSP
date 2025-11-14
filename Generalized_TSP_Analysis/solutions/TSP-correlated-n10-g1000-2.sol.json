@@ -1,0 +1,50 @@
+{
+    "instance_name": "TSP-correlated-n10-g1000-2",
+    "n_customers": 10,
+    "dimension": 2,
+    "grid_size": 1000,
+    "optimal_cost": 2486,
+    "optimal_tour": [
+        8,
+        5,
+        1,
+        2,
+        4,
+        3,
+        7,
+        10,
+        9,
+        6
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "C:\\Area-and-Distribution-Free-Estimators-for-TSP\\Generalized_TSP_Analysis\\instances\\TSP-correlated-n10-g1000-2.json",
+    "concorde_length": 2486,
+    "concorde_time_s": 0.41643070000282023,
+    "concorde_tour": [
+        1,
+        5,
+        8,
+        6,
+        9,
+        10,
+        7,
+        3,
+        4,
+        2
+    ],
+    "lkh_length": 2486,
+    "lkh_time_s": 0.044379200000548735,
+    "lkh_tour": [
+        8,
+        5,
+        1,
+        2,
+        4,
+        3,
+        7,
+        10,
+        9,
+        6
+    ],
+    "lkh_gap_pct": 0.0
+}

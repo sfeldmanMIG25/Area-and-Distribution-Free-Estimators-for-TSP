@@ -1,0 +1,42 @@
+{
+    "instance_name": "TSP-squeezed_uniform-n8-g1000-3",
+    "n_customers": 8,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "squeezed_uniform",
+    "generation_seed": 76536,
+    "coordinates": [
+        [
+            984,
+            101
+        ],
+        [
+            592,
+            953
+        ],
+        [
+            976,
+            762
+        ],
+        [
+            795,
+            332
+        ],
+        [
+            861,
+            332
+        ],
+        [
+            942,
+            312
+        ],
+        [
+            927,
+            702
+        ],
+        [
+            581,
+            691
+        ]
+    ]
+}

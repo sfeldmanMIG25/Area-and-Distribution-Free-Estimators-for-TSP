@@ -1,0 +1,50 @@
+{
+    "instance_name": "TSP-truncated_exponential-n10-g10000-4",
+    "n_customers": 10,
+    "dimension": 2,
+    "grid_size": 10000,
+    "optimal_cost": 24968,
+    "optimal_tour": [
+        6,
+        10,
+        8,
+        7,
+        9,
+        1,
+        5,
+        3,
+        4,
+        2
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "C:\\Area-and-Distribution-Free-Estimators-for-TSP\\Generalized_TSP_Analysis\\instances\\TSP-truncated_exponential-n10-g10000-4.json",
+    "concorde_length": 24968,
+    "concorde_time_s": 0.8123373999987962,
+    "concorde_tour": [
+        1,
+        9,
+        7,
+        8,
+        10,
+        6,
+        2,
+        4,
+        3,
+        5
+    ],
+    "lkh_length": 24968,
+    "lkh_time_s": 0.04577689999132417,
+    "lkh_tour": [
+        6,
+        10,
+        8,
+        7,
+        9,
+        1,
+        5,
+        3,
+        4,
+        2
+    ],
+    "lkh_gap_pct": 0.0
+}

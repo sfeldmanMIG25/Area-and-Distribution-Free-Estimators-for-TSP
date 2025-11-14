@@ -1,0 +1,50 @@
+{
+    "instance_name": "TSP-triangular_squeezed-n10-g1000-2",
+    "n_customers": 10,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "triangular_squeezed",
+    "generation_seed": 141048,
+    "coordinates": [
+        [
+            230,
+            558
+        ],
+        [
+            668,
+            248
+        ],
+        [
+            583,
+            941
+        ],
+        [
+            678,
+            912
+        ],
+        [
+            423,
+            995
+        ],
+        [
+            617,
+            945
+        ],
+        [
+            337,
+            266
+        ],
+        [
+            921,
+            682
+        ],
+        [
+            501,
+            614
+        ],
+        [
+            301,
+            882
+        ]
+    ]
+}

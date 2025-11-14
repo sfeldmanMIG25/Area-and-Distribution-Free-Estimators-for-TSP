@@ -1,0 +1,30 @@
+{
+    "instance_name": "TSP-random-n5-g1000-5",
+    "n_customers": 5,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "random",
+    "generation_seed": 7146,
+    "coordinates": [
+        [
+            134,
+            731
+        ],
+        [
+            836,
+            995
+        ],
+        [
+            5,
+            365
+        ],
+        [
+            369,
+            822
+        ],
+        [
+            766,
+            426
+        ]
+    ]
+}

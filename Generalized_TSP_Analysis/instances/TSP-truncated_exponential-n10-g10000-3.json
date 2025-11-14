@@ -1,0 +1,50 @@
+{
+    "instance_name": "TSP-truncated_exponential-n10-g10000-3",
+    "n_customers": 10,
+    "dimension": 2,
+    "grid_size": 10000,
+    "distribution_type": "truncated_exponential",
+    "generation_seed": 1351259,
+    "coordinates": [
+        [
+            6353,
+            4156
+        ],
+        [
+            5463,
+            4837
+        ],
+        [
+            857,
+            1450
+        ],
+        [
+            6663,
+            569
+        ],
+        [
+            566,
+            35
+        ],
+        [
+            1813,
+            1448
+        ],
+        [
+            102,
+            2560
+        ],
+        [
+            8083,
+            5343
+        ],
+        [
+            7917,
+            1001
+        ],
+        [
+            7034,
+            5092
+        ]
+    ]
+}

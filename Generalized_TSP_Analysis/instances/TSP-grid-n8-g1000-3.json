@@ -1,0 +1,42 @@
+{
+    "instance_name": "TSP-grid-n8-g1000-3",
+    "n_customers": 8,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "grid",
+    "generation_seed": 105225,
+    "coordinates": [
+        [
+            158,
+            164
+        ],
+        [
+            160,
+            485
+        ],
+        [
+            183,
+            835
+        ],
+        [
+            494,
+            162
+        ],
+        [
+            491,
+            500
+        ],
+        [
+            512,
+            829
+        ],
+        [
+            849,
+            168
+        ],
+        [
+            848,
+            498
+        ]
+    ]
+}

@@ -1,0 +1,50 @@
+{
+    "instance_name": "TSP-triangular_squeezed-n10-g1000-4",
+    "n_customers": 10,
+    "dimension": 2,
+    "grid_size": 1000,
+    "optimal_cost": 2475,
+    "optimal_tour": [
+        6,
+        10,
+        3,
+        2,
+        7,
+        5,
+        4,
+        9,
+        8,
+        1
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "C:\\Area-and-Distribution-Free-Estimators-for-TSP\\Generalized_TSP_Analysis\\instances\\TSP-triangular_squeezed-n10-g1000-4.json",
+    "concorde_length": 2475,
+    "concorde_time_s": 0.5985284999915166,
+    "concorde_tour": [
+        1,
+        8,
+        9,
+        4,
+        5,
+        7,
+        2,
+        3,
+        10,
+        6
+    ],
+    "lkh_length": 2475,
+    "lkh_time_s": 0.12400070000148844,
+    "lkh_tour": [
+        6,
+        10,
+        3,
+        2,
+        7,
+        5,
+        4,
+        9,
+        8,
+        1
+    ],
+    "lkh_gap_pct": 0.0
+}

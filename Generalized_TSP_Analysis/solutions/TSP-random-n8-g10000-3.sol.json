@@ -1,0 +1,44 @@
+{
+    "instance_name": "TSP-random-n8-g10000-3",
+    "n_customers": 8,
+    "dimension": 2,
+    "grid_size": 10000,
+    "optimal_cost": 35741,
+    "optimal_tour": [
+        6,
+        3,
+        5,
+        1,
+        2,
+        8,
+        4,
+        7
+    ],
+    "optimal_solver": "lkh",
+    "instance_file_path": "C:\\Area-and-Distribution-Free-Estimators-for-TSP\\Generalized_TSP_Analysis\\instances\\TSP-random-n8-g10000-3.json",
+    "concorde_length": 35741,
+    "concorde_time_s": 0.2750651999958791,
+    "concorde_tour": [
+        1,
+        2,
+        8,
+        4,
+        7,
+        6,
+        3,
+        5
+    ],
+    "lkh_length": 35741,
+    "lkh_time_s": 0.15303090000816155,
+    "lkh_tour": [
+        6,
+        3,
+        5,
+        1,
+        2,
+        8,
+        4,
+        7
+    ],
+    "lkh_gap_pct": 0.0
+}

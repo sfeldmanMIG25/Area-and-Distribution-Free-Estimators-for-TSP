@@ -1,0 +1,50 @@
+{
+    "instance_name": "TSP-uniform_triangular-n10-g1000-4",
+    "n_customers": 10,
+    "dimension": 2,
+    "grid_size": 1000,
+    "distribution_type": "uniform_triangular",
+    "generation_seed": 137948,
+    "coordinates": [
+        [
+            344,
+            472
+        ],
+        [
+            714,
+            134
+        ],
+        [
+            941,
+            388
+        ],
+        [
+            268,
+            133
+        ],
+        [
+            374,
+            908
+        ],
+        [
+            271,
+            639
+        ],
+        [
+            892,
+            610
+        ],
+        [
+            305,
+            491
+        ],
+        [
+            155,
+            585
+        ],
+        [
+            342,
+            384
+        ]
+    ]
+}
