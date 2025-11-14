@@ -226,6 +226,42 @@ def calculate_tour_cost(coordinates, tour_nodes):
 # ====================================================================
 # TIMED TSP ESTIMATOR FUNCTIONS
 # ====================================================================
+def estimate_tsp_composite(nodes_coords, **kwargs):
+    """
+    Estimates TSP cost using the 'composite' heuristic:
+    - Held-Karp for n <= 10
+    - Vinel for 10 < n < 100
+    - Cavdar for n >= 100
+    - Bounded by [MST, 2*MST].
+    Returns: (estimated_cost, time_taken)
+    """
+    start_time = time.perf_counter()
+    
+    n = len(nodes_coords)
+    if n <= 1: return 0.0, 0.0
+    
+    # 1. Use Held-Karp for tiny instances (it's fast and exact)
+    if n <= 10:
+        cost, _ = estimate_tsp_held_karp(nodes_coords)
+        total_time = time.perf_counter() - start_time
+        return cost, total_time
+
+    # 2. Get MST (for bounding)
+    # We call the public, timed function
+    mst_length, mst_time = get_mst_length(nodes_coords)
+    
+    # 3. Get Heuristic Estimate
+    if n < 100:
+        original_estimate, est_time = estimate_tsp_vinel(nodes_coords)
+    else:
+        original_estimate, est_time = estimate_tsp_cavdar(nodes_coords)
+        
+    # 4. Apply bounds
+    final_cost = max(mst_length, min(2 * mst_length, original_estimate))
+    
+    # Total time is the sum of all steps
+    total_time = (time.perf_counter() - start_time)
+    return final_cost, total_time
 
 def estimate_tsp_cavdar(nodes_coords, a0=2.791, a1=0.2669):
     """
@@ -365,7 +401,13 @@ def estimate_tsp_ml_alpha(nodes_coords, ml_model):
         return 0.0, time.perf_counter() - start_time
 
     # 2. Get feature list from model
-    feature_cols = ml_model.feature_name_in_
+    try:
+        feature_cols = ml_model.feature_name_
+    except AttributeError:
+        # Fallback for different LGBM versions
+        feature_cols = ml_model.feature_name_()
+    # --- END FIX ---
+    
     feature_df = pd.DataFrame([features_dict])[feature_cols]
     
     # 3. Predict
@@ -520,10 +562,12 @@ def _compute_tree_diameter(mst_adj, n):
     _, diameter = farthest(node1)
     return diameter
 
-# --- Internal Helper: _compute_cluster_features (from feature_creator.py) ---
+# REPLACE this function in tsp_utils.py
 def _compute_cluster_features(coords, dist_matrix, mst_csr, n):
     """
     Computes advanced cluster features by finding an optimal K.
+    (V3 FIX: Removed invalid 'n_jobs=1' from KMeans.
+     'n_init=1' already prevents parallelization.)
     """
     K_MIN = 2
     K_MAX = max(K_MIN, int(np.ceil(np.log(n))))
@@ -559,7 +603,15 @@ def _compute_cluster_features(coords, dist_matrix, mst_csr, n):
             continue
             
         mst_centroids = np.array([coords[mst_labels == i].mean(axis=0) for i in range(k)])
-        kmeans = KMeans(n_clusters=k, n_init=1, max_iter=10, random_state=RANDOM_STATE).fit(coords)
+        
+        # --- THIS IS THE FIX ---
+        kmeans = KMeans(
+            n_clusters=k, n_init=1, max_iter=10, 
+            random_state=RANDOM_STATE
+            # n_jobs=1 has been removed
+        ).fit(coords)
+        # --- END FIX ---
+        
         kmeans_centroids = kmeans.cluster_centers_
         
         alignment_dist_matrix = cdist(mst_centroids, kmeans_centroids)
@@ -574,7 +626,6 @@ def _compute_cluster_features(coords, dist_matrix, mst_csr, n):
 
     if best_k == -1: return default_output
 
-    # Per your convention, this will fail hard if a cluster has 1 member
     current_silhouette_score = silhouette_score(coords, best_mst_labels, metric='euclidean')
         
     if current_silhouette_score < MIN_SILHOUETTE_SCORE:
@@ -862,42 +913,63 @@ def load_model_and_features(model_path, features_csv_path):
     
     return model, feature_list_set
 
-def estimate_tsp_from_model(nodes_coords, n, d, ml_model, feature_list_set, use_boosted_features=False):
+# REPLACE this function in tsp_utils.py
+
+def estimate_tsp_from_model(nodes_coords, n, d, grid_size, ml_model, feature_list_set, use_boosted_features=False):
     """
     Generic timed function to estimate TSP cost from a loaded model
     using on-demand feature calculation.
+    (V2: Fixed KeyError for boosted models)
     
-    Args:
-        nodes_coords (np.array): Array of [x, y] coordinates.
-        n (int): Number of nodes.
-        d (int): Number of dimensions.
-        ml_model (Pipeline): The loaded scikit-learn model.
-        feature_list_set (set): The set of feature names this model needs.
-        use_boosted_features (bool): Whether to run the boosted feature engineering.
-        
     Returns: (estimated_cost, time_taken)
     """
     start_time = time.perf_counter()
     
     if n <= 1: return 0.0, 0.0
     
-    # 1. Generate *only* the features we need
-    features_dict, mst_length = _calculate_minimal_features(nodes_coords, n, d, feature_list_set)
+    # --- V2 FIX: ---
+    # We must ensure that the *base* features needed for boosting
+    # are calculated, even if they aren't in the final feature list.
+    features_to_calculate = set(feature_list_set) 
+    if use_boosted_features:
+        # This list is from _create_boosted_features
+        base_features_for_log = [
+            'n_customers', 'grid_size', 'bounding_hypervolume', 'node_density',
+            'aspect_ratio', 'centroid_dist_min', 'centroid_dist_mean',
+            'centroid_dist_std', 'centroid_dist_max', 'centroid_dist_iqr',
+            'pairwise_min', 'pairwise_mean', 'pairwise_std', 'pairwise_max',
+            'pairwise_q10', 'pairwise_q25', 'pairwise_q50', 'pairwise_q75',
+            'pairwise_q90', 'pairwise_iqr', 'nn_min', 'nn_mean', 'nn_std',
+            'nn_max', 'nn_iqr', 'avg_3nn_dist', 'avg_ln_n_nn_dist',
+            'mst_edge_min', 'mst_edge_mean', 'mst_edge_std', 'mst_edge_max',
+            'mst_diameter', 'large_edge_count', 'mst_high_degree_count',
+            'k_size_ratio', 'k_total_intra_mst_cost', 'k_inter_centroid_mst_cost',
+            'k_cost_ratio', 'k_centroid_dist_mean', 'k_centroid_dist_std'
+        ]
+        # Base features for interaction
+        base_features_for_int = ['k_cost_ratio', 'k_silhouette_score']
+        
+        features_to_calculate.update(base_features_for_log)
+        features_to_calculate.update(base_features_for_int)
+    # --- END V2 FIX ---
+
+    # 1. Generate *all* features we need (final + base)
+    features_dict, mst_length = _calculate_minimal_features(nodes_coords, n, d, features_to_calculate)
     if mst_length == 0:
         return 0.0, time.perf_counter() - start_time
     
     features_df = pd.DataFrame([features_dict])
     
+    if 'grid_size' not in features_df.columns:
+        features_df['grid_size'] = grid_size
+    
     # 2. (Optional) Engineer boosted features
     if use_boosted_features:
         features_df = _create_boosted_features(features_df.copy(), feature_list_set)
     
-    # 3. Filter to the final feature list
-    # The list *from the model* is the source of truth
-    final_feature_list = ml_model.feature_name_in_
+    # 3. Filter to the final feature list (from the model)
+    final_feature_list = ml_model.feature_names_in_
     
-    # Ensure all required features are columns, add as NaN if not
-    # (e.g., if a boosted feature wasn't created, it becomes NaN)
     for col in final_feature_list:
         if col not in features_df.columns:
             features_df[col] = np.nan
@@ -961,14 +1033,14 @@ class TabularNet_v6(nn.Module):
         super(TabularNet_v6, self).__init__()
         self.cont_tower = _build_mlp_tower_v6(
             in_features=n_cont_features,
-            n_layers=params['n_layers_cont'], # V6 uses this
+            # n_layers=params['n_layers_cont'], # <--- REMOVED
             n_units_list=params['n_units_cont_list'],
             activation=params['activation'],
             dropout_rate=params['dropout_rate']
         )
         self.cat_tower = _build_mlp_tower_v6(
             in_features=n_cat_features,
-            n_layers=params['n_layers_cat'], # V6 uses this
+            # n_layers=params['n_layers_cat'], # <--- REMOVED
             n_units_list=params['n_units_cat_list'],
             activation=params['activation'],
             dropout_rate=params['dropout_rate']
@@ -976,7 +1048,7 @@ class TabularNet_v6(nn.Module):
         head_input_size = params['n_units_cont_list'][-1] + params['n_units_cat_list'][-1]
         self.head = _build_mlp_tower_v6(
             in_features=head_input_size,
-            n_layers=params['n_layers_head'], # V6 uses this
+            # n_layers=params['n_layers_head'], # <--- REMOVED
             n_units_list=params['n_units_head_list'],
             activation=params['activation'],
             dropout_rate=params['dropout_rate']
@@ -1073,6 +1145,7 @@ def _compute_sub_cluster_features_v2(sub_coords, sub_dist_matrix):
     else: sub_feats['sub_density'] = np.inf
     return sub_feats
 
+# REPLACE this function in tsp_utils.py
 def _compute_cluster_features_v2(coords, dist_matrix, mst_csr, n):
     K_MIN = 2; K_MAX = max(K_MIN, int(np.ceil(np.log(n))))
     n_unique_points = len(np.unique(coords, axis=0))
@@ -1094,7 +1167,14 @@ def _compute_cluster_features_v2(coords, dist_matrix, mst_csr, n):
         
         if n_components != k: continue
         mst_centroids = np.array([coords[mst_labels == i].mean(axis=0) for i in range(k)])
-        kmeans = KMeans(n_clusters=k, n_init=1, max_iter=10, random_state=RANDOM_STATE).fit(coords)
+        
+        # --- THIS IS THE FIX ---
+        kmeans = KMeans(
+            n_clusters=k, n_init=1, max_iter=10, 
+            random_state=RANDOM_STATE, n_jobs=1  # Force serial execution
+        ).fit(coords)
+        # --- END FIX ---
+        
         kmeans_centroids = kmeans.cluster_centers_
         
         alignment_dist_matrix = cdist(mst_centroids, kmeans_centroids)
@@ -1386,14 +1466,16 @@ def estimate_tsp_lgbm(
     return final_cost, total_time
 
 
+# REPLACE this function in tsp_utils.py
 def estimate_tsp_piecewise(
-    nodes_coords, n, d, 
+    nodes_coords, n, d, grid_size,  # Added grid_size
     router_model,
     blob_model, blob_features_set,
     cluster_model, cluster_features_set
 ):
     """
     Estimates TSP cost using the piecewise "mixture of experts" model.
+    (V2: Fixed KeyError for boosted features)
     
     Returns: (estimated_cost, time_taken)
     """
@@ -1401,28 +1483,57 @@ def estimate_tsp_piecewise(
     
     if n <= 1: return 0.0, 0.0
     
+    # --- V2 FIX: ---
+    # We must ensure that the *base* features needed for boosting
+    # are calculated, even if they aren't in the final feature list.
     required_features_set = blob_features_set.union(cluster_features_set)
-    required_features_set.add('k_silhouette_score')
-    required_features_set.add('is_clustered') 
+    required_features_set.add('k_silhouette_score') # For the router
+    
+    # This list is from _create_boosted_features
+    base_features_for_log = [
+        'n_customers', 'grid_size', 'bounding_hypervolume', 'node_density',
+        'aspect_ratio', 'centroid_dist_min', 'centroid_dist_mean',
+        'centroid_dist_std', 'centroid_dist_max', 'centroid_dist_iqr',
+        'pairwise_min', 'pairwise_mean', 'pairwise_std', 'pairwise_max',
+        'pairwise_q10', 'pairwise_q25', 'pairwise_q50', 'pairwise_q75',
+        'pairwise_q90', 'pairwise_iqr', 'nn_min', 'nn_mean', 'nn_std',
+        'nn_max', 'nn_iqr', 'avg_3nn_dist', 'avg_ln_n_nn_dist',
+        'mst_edge_min', 'mst_edge_mean', 'mst_edge_std', 'mst_edge_max',
+        'mst_diameter', 'large_edge_count', 'mst_high_degree_count',
+        'k_size_ratio', 'k_total_intra_mst_cost', 'k_inter_centroid_mst_cost',
+        'k_cost_ratio', 'k_centroid_dist_mean', 'k_centroid_dist_std'
+    ]
+    base_features_for_int = ['k_cost_ratio', 'k_silhouette_score']
+    
+    features_to_calculate = set(required_features_set)
+    features_to_calculate.update(base_features_for_log)
+    features_to_calculate.update(base_features_for_int)
+    # --- END V2 FIX ---
     
     features_dict, mst_length = _calculate_minimal_features(
-        nodes_coords, n, d, required_features_set
+        nodes_coords, n, d, features_to_calculate
     )
     if mst_length == 0:
         return 0.0, time.perf_counter() - start_time
     
     features_df = pd.DataFrame([features_dict])
-    features_df = _create_boosted_features(features_df.copy(), required_features_set)
-    features_df['is_clustered'] = (features_df['k_silhouette_score'] > CLUSTER_THRESHOLD).fillna(False)
     
+    # Add grid_size *before* boosting
+    if 'grid_size' not in features_df.columns:
+        features_df['grid_size'] = grid_size
+        
+    features_df = _create_boosted_features(features_df.copy(), required_features_set)
+    
+    # Run the router
+    features_df['is_clustered'] = (features_df['k_silhouette_score'] > CLUSTER_THRESHOLD).fillna(False)
     is_clustered = router_model.predict(features_df[['is_clustered']])[0]
     
     if is_clustered:
         expert_model = cluster_model
-        expert_features = cluster_model.feature_name_in_
+        expert_features = cluster_model.feature_names_in_
     else:
         expert_model = blob_model
-        expert_features = blob_model.feature_name_in_
+        expert_features = blob_model.feature_names_in_
         
     for col in expert_features:
         if col not in features_df.columns:
